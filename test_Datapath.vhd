@@ -21,7 +21,6 @@ architecture tb of tb_Datapath is
               RB        : in STD_LOGIC_VECTOR(M - 1 downto 0);
               ReadB     : in STD_LOGIC;
               OE        : in STD_LOGIC;
-              EN        : in STD_LOGIC;
               OP        : in STD_LOGIC_VECTOR(2 downto 0);
               Output    : out STD_LOGIC_VECTOR(N - 1 downto 0);
               Z_Flag    : out STD_LOGIC;
@@ -100,6 +99,7 @@ begin
 
     -- store 1 at address 001
     tt_OP <= "110";
+    tt_Bypass <= "00"; -- no bypassing whatsoever
     tt_WAddr <= std_logic_vector(to_unsigned(1, tt_WAddr'length));
     tt_Input <= std_logic_vector(to_unsigned(1, tt_Input'length));
     tt_Write <= '1';
@@ -114,7 +114,7 @@ begin
     -- kickstart the addition
     tt_OP <= "000";
     tt_WAddr <= std_logic_vector(to_unsigned(1, tt_WAddr'length));
-    tt_Write <= '0'; -- do not write yet!, 1 cycle latency for the data to propagate to ALU
+    --tt_Write <= '0'; -- do not write yet!, 1 cycle latency for the data to propagate to ALU
     tt_OE <= '0';
     -- load the 1's to ALU
     tt_RA <= std_logic_vector(to_unsigned(1, tt_RA'length));
@@ -123,22 +123,52 @@ begin
     tt_ReadB <= '1';
     wait for 10 ns; -- still 'ZZZ' on the output since OE is 0
 
-    -- 1 cycle operation due to ALU and RF write/op latency (in the Lab3)
+    -- 2 cycle operation due to RF write/op latency
     for i in 2 to 7 loop
         tt_OE <= '1'; -- now the results will be good to write to the RF
         tt_IE <= '0'; -- read only data from ALU
         tt_Write <= '1';
         sv_expected_output := std_logic_vector(to_unsigned(i, sv_expected_output'length));
-        wait for 10 ns; -- while it waits here next operation propagates
+        wait for 20 ns; -- while it waits here next operation propagates
     end loop;
 
     -- check if overflowed
     sv_expected_output := std_logic_vector(to_unsigned(0, sv_expected_output'length));
     wait for 10 ns;
 
-    -- test Bypass operation
+    -- store the PC in last register
+    -- MOV
+    tt_OP <= "110";
+    tt_WAddr <= (others => '1');
+    tt_Input <= "010";
+    tt_Write <= '1';
+    tt_IE <= '1';
+    wait for 20 ns;
+    -- store in second to last
+    tt_Input <= "111";
+    tt_WAddr <= "110";
+    wait for 20 ns;
 
-    -- test bypass
+    -- test Bypass operation
+    tt_OP <= "110"; -- MOV
+    tt_Bypass <= "10";
+    tt_Offset <= "111";
+    wait for 10 ns; -- just one cycle here as we bypass the RF
+    sv_expected_output := "111";
+    wait for 10 ns;
+
+    tt_WAddr <= "011"; -- redirect the result data from ALU somewhere
+    tt_OP <= "010"; -- AND
+    tt_Bypass <= "11";
+    wait for 10 ns;
+    sv_expected_output := "010"; -- have to wait, because it takes time to compute the expected result
+    wait for 10 ns;
+
+    tt_Bypass <= "01";
+    tt_RA <= "010";
+    wait for 10 ns;
+    sv_expected_output := "010"; -- PC contains 010
+
     end process;
 end tb;
 

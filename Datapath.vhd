@@ -72,7 +72,7 @@ begin
                          RA => RA,
                          ReadA => ReadA,
                          RB => s_RB_input_f,
-                         ReadB => ReadB,
+                         ReadB => s_ReadB_input_f,
                          QA => s_QA,
                          QB => s_QB,
                          rst => rst,
@@ -117,8 +117,8 @@ begin
         s_A_input_f <= Offset;
 
         -- B
-        s_ReadB_input_f <= readB;
-        s_RB_input_f <= s_QB;
+        s_RB_input_f <= RB;
+        s_ReadB_input_f <= ReadB;
     elsif Bypass = "01" then
         -- A
         s_A_input_f <= s_QA;
@@ -128,8 +128,8 @@ begin
         s_ReadB_input_f <= '1';
     else -- normal case
         s_A_input_f <= s_QA;
-        s_ReadB_input_f <= readB;
-        s_RB_input_f <= s_QB;
+        s_RB_input_f <= RB;
+        s_ReadB_input_f <= ReadB;
     end if;
     end process;
 end structural;
