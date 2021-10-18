@@ -7,11 +7,10 @@ entity ALU is
 	port (OP		: in STD_LOGIC_VECTOR(2 downto 0);
 			A		: in STD_LOGIC_VECTOR(N - 1 downto 0);
 			B		: in STD_LOGIC_VECTOR(N - 1 downto 0);
-			Sum	: out STD_LOGIC_VECTOR(N - 1 downto 0);
-			Z_Flag: out STD_LOGIC;
-			N_Flag: out STD_LOGIC;
-			O_Flag: out STD_LOGIC;
-            en      : IN STD_LOGIC;
+			Sum	    : out STD_LOGIC_VECTOR(N - 1 downto 0);
+			N_Flag  : out STD_LOGIC;
+            Z_Flag  : out STD_LOGIC;
+			O_Flag  : out STD_LOGIC;
             rst     : IN STD_LOGIC);
 end ALU;
 
@@ -20,18 +19,19 @@ architecture data_flow of ALU is -- should it be called behavioral?
 
     constant c_all_zeros : STD_LOGIC_VECTOR(A'range) := (others => '0');
 begin
-	proc : process(OP, A, B, rst, en, clk)
+	proc : process(OP, A, B, rst)
 		variable v_Sum :    STD_LOGIC_VECTOR(N - 1 downto 0);
         variable v_Z_Flag : STD_LOGIC;
         variable v_N_Flag : STD_LOGIC;
         variable v_O_Flag : STD_LOGIC;
 	begin
     if rst = '1' then
+        v_Sum := (others => '0');
         Sum <= (others => '0');
         Z_Flag <= '0';
         N_Flag <= '0';
         O_Flag <= '0';
-    elsif en = '1' then
+    else
 		case (t_operation'val(to_integer(unsigned(OP)))) is
 			when OP_ADD => v_Sum := std_logic_vector(signed(A) + signed(B));
 			when OP_SUB => v_Sum := std_logic_vector(signed(A) - signed(B));
@@ -66,11 +66,6 @@ begin
             v_O_Flag := '0';
         end if;
         Sum <= v_Sum; -- TODO: check if behaves properly - combi
-        Z_Flag <= v_Z_Flag;
-        N_Flag <= v_N_Flag;
-        O_Flag <= v_O_Flag;
-    else
-        Sum <= v_Sum;
         Z_Flag <= v_Z_Flag;
         N_Flag <= v_N_Flag;
         O_Flag <= v_O_Flag;

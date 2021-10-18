@@ -47,7 +47,6 @@ architecture tb of tb_Datapath is
     signal tt_RB        : STD_LOGIC_VECTOR(c_M - 1 downto 0);
     signal tt_ReadB     : STD_LOGIC;
     signal tt_OE        : STD_LOGIC;
-    signal tt_EN        : STD_LOGIC;
     signal tt_OP        : STD_LOGIC_VECTOR(2 downto 0);
     signal tt_Output    : STD_LOGIC_VECTOR(c_N - 1 downto 0);
     signal tt_Z_Flag    : STD_LOGIC;
@@ -69,7 +68,6 @@ begin
                                      RB => tt_RB,
                                      ReadB => tt_ReadB,
                                      OE => tt_OE,
-                                     EN => tt_EN,
                                      OP => tt_OP,
                                      Output => tt_Output,
                                      Z_Flag => tt_Z_Flag,
@@ -102,7 +100,6 @@ begin
 
     -- store 1 at address 001
     tt_OP <= "110";
-    tt_EN <= '1';
     tt_WAddr <= std_logic_vector(to_unsigned(1, tt_WAddr'length));
     tt_Input <= std_logic_vector(to_unsigned(1, tt_Input'length));
     tt_Write <= '1';

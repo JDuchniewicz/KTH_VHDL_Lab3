@@ -16,7 +16,6 @@ entity Datapath is
           RB        : in STD_LOGIC_VECTOR(M - 1 downto 0);
           ReadB     : in STD_LOGIC;
           OE        : in STD_LOGIC;
-          EN        : in STD_LOGIC;
           OP        : in STD_LOGIC_VECTOR(2 downto 0);
           Output    : out STD_LOGIC_VECTOR(N - 1 downto 0);
           Z_Flag    : out STD_LOGIC;
@@ -52,7 +51,6 @@ architecture structural of Datapath is
                 Z_Flag  : out STD_LOGIC;
                 N_Flag  : out STD_LOGIC;
                 O_Flag  : out STD_LOGIC;
-                en      : IN STD_LOGIC;
                 rst     : IN STD_LOGIC);
     end component;
 
@@ -88,7 +86,6 @@ begin
                          Z_Flag => Z_Flag,
                          N_Flag => N_Flag,
                          O_Flag => O_Flag,
-                         en => EN,
                          rst => rst);
 
     proc : process (IE, OE, clk)
