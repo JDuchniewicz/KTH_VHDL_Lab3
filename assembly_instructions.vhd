@@ -73,4 +73,5 @@ package microcode_instructions is
     constant L_IR  : STD_LOGIC_VECTOR(2 downto 0) := "001";
     constant L_FLAG : STD_LOGIC_VECTOR(2 downto 0) := "010";
     constant L_ADDR : STD_LOGIC_VECTOR(2 downto 0) := "011";
+    constant L_DOUT : STD_LOGIC_VECTOR(2 downto 0) := "100";
 end microcode_instructions;
