@@ -16,8 +16,7 @@ entity MicrocodeFSM is
          RA          : OUT STD_LOGIC_VECTOR(K - 1 downto 0);
          RB          : OUT STD_LOGIC_VECTOR(K - 1 downto 0);
          Data_offset : OUT STD_LOGIC_VECTOR(N - K - 1 downto 0); -- TODO: manage Address and PC in the upper block (know from the uInst what to do here)
-         uInstr      : OUT STD_LOGIC_VECTOR(3 downto 0); -- TODO: tweak size or add more signals?
-         RW          : OUT STD_LOGIC);
+         uInstr      : OUT STD_LOGIC_VECTOR(10 downto 0)); -- TODO: tweak size or add more signals?
 end MicrocodeFSM;
 
 architecture structural of MicrocodeFSM is
@@ -25,8 +24,7 @@ architecture structural of MicrocodeFSM is
         port(opcode : IN OPCODE; -- TODO: do the uInstr LUT in the ROM
              flag   : IN STD_LOGIC;
              uPC    : IN STD_LOGIC_VECTOR(1 downto 0);
-             uInstr : OUT STD_LOGIC_VECTOR(3 downto 0); -- TODO: tweak size or add more signals?
-             RW     : OUT STD_LOGIC);
+             uInstr : OUT STD_LOGIC_VECTOR(10 downto 0)); -- TODO: tweak size or add more signals?
     end component;
 
     signal s_opcode : OPCODE;
@@ -43,8 +41,7 @@ begin
     ROM1 : ROM port map(opcode => s_opcode,
                         flag => s_flag,
                         uPC => s_uPC,
-                        uInstr => uInstr,
-                        RW => RW);
+                        uInstr => uInstr);
 
     s_opcode <= s_IR(N - 1 downto N - 5);
     s_curr_state <= t_fsm_state(s_opcode); -- debug?? TODO: print state name in Modelsim
@@ -61,7 +58,6 @@ begin
             RA <= (others => '0');
             RB <= (others => '0');
             uInstr <= (others => '0');
-            RW <= '0';
             s_opcode <= (others => '0');
             s_flag <= '0';
             s_uPC <= (others => '0');
