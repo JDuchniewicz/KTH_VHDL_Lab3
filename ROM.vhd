@@ -57,7 +57,7 @@ architecture structural of ROM is
         ROM_content(to_integer(unsigned(0100010))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(0100011))) := ('0', NOBR, '0', '0', '0', OP_MOV, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- NOT = 0101 Flag = 0 Addr = 0101000 (TODO: is this present after we fix the ALU?)
+        -- NOT = 0101 Flag = 0 Addr = 0101000 (TODO: is this present after we fix the ALU?) TODO: fix it it works differently R1 = NOT R2
         ROM_content(to_integer(unsigned(0101000))) := ('0', NOBR, '0', '0', '0', OP_MOV, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(0101001))) := ('0', NOBR, '1', '1', ' OP_MOV0', OP_NOT, '0', READ, ZERO, L_FLAG); -- Fetch Ops
         ROM_content(to_integer(unsigned(0101010))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute

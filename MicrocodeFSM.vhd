@@ -4,18 +4,13 @@ use ieee.numeric_std.all;
 use work.assembly_instructions.all;
 
 entity MicrocodeFSM is
-    generic port(N : INTEGER;
-                 K : INTEGER);
+    generic port(N : INTEGER);
     port(clk         : IN STD_LOGIC;
          rst         : IN STD_LOGIC;
          Din         : IN STD_LOGIC_VECTOR(N - 1 downto 0);
          Z_Flag      : IN STD_LOGIC;
          N_Flag      : IN STD_LOGIC;
          O_Flag      : IN STD_LOGIC;
-         WA          : OUT STD_LOGIC_VECTOR(K - 1 downto 0);
-         RA          : OUT STD_LOGIC_VECTOR(K - 1 downto 0);
-         RB          : OUT STD_LOGIC_VECTOR(K - 1 downto 0);
-         Data_offset : OUT STD_LOGIC_VECTOR(N - K - 1 downto 0); -- TODO: manage Address and PC in the upper block (know from the uInst what to do here)
          uInstr      : OUT STD_LOGIC_VECTOR(10 downto 0)); -- TODO: tweak size or add more signals?
 end MicrocodeFSM;
 
@@ -31,7 +26,6 @@ architecture structural of MicrocodeFSM is
     signal s_flag   : STD_LOGIC;
     signal s_uPC    : STD_LOGIC_VECTOR(1 downto 0);
     signal s_IR     : STD_LOGIC_VECTOR(N - 1 downto 0);
-    signal s_IR_enable : STD_LOGIC;
 
     type t_fsm_state is (S_ADD, S_SUB, S_AND, S_OR, S_XOR, S_NOT, S_MOV, S_NOP, S_LD, S_ST, S_LDI, S_NA, S_BRZ, S_BRN, S_BRO, S_BRA);
     --signal s_next_state : t_fsm_state;
@@ -66,23 +60,15 @@ begin
         elsif rising_edge(clk) then
             if s_uPC = "11" then
                 s_uPC <= "00";
-                s_IR_enable <= '1';
             else
                 s_uPC <= s_uPC + 1;
-                s_IR_enable <= '0';
-            end if;
-            -- load the IR register
-            if s_IR_enable = '1' then
-                s_IR <= Din; -- register the Din TODO: (only enable when uPC is 0)?
-            else
-                s_IR <= s_IR;
             end if;
         -- ROM will contain all the instructions coded and output it as uInstr which is mapped to a std_vector of signals coming out of this component and documented properly
         end if;
     end process;
 
     -- control the s_flag depending on current state
-    flags : process (s_curr_state)
+    flags : process (s_curr_state) -- flags could be unified as well TODO -> needs support from the ROM side to unify instructions
     begin
         case s_curr_state is
             when S_BRZ => s_flag <= Z_Flag;
@@ -90,6 +76,15 @@ begin
             when S_BRO => s_flag <= O_Flag;
             when others => s_flag <= '0'; -- zero for other instructions?
         end case;
+    end process;
+
+    ir_en : process (uInstr)
+    begin
+        if uInstr(1 downto 0) = L_IR then
+            s_IR <= Din;
+        else
+            s_IR <= s_IR;
+        end if;
     end process;
 
 end structural;
