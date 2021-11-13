@@ -54,17 +54,14 @@ package microcode_instructions is
     constant BP_B  : STD_LOGIC_VECTOR(1 downto 0) := "01";
     constant BP_AB : STD_LOGIC_VECTOR(1 downto 0) := "11";
 
-    -- TODO: update the new ALU ops
     constant OP_ADD : ALU_OPCODE := "000";
     constant OP_SUB : ALU_OPCODE := "001";
     constant OP_AND : ALU_OPCODE := "010";
     constant OP_OR  : ALU_OPCODE := "011";
     constant OP_XOR : ALU_OPCODE := "100";
-    constant OP_NOT : ALU_OPCODE := "101";
-    constant OP_MOV : ALU_OPCODE := "110";
-    constant OP_Zero : ALU_OPCODE := "111";
-
-	--type t_operation is (OP_ADD, OP_SUB, OP_AND, OP_OR, OP_XOR, OP_NOT, OP_MOV, OP_Zero);
+    constant OP_INCR : ALU_OPCODE := "101";
+    constant OP_MOVA : ALU_OPCODE := "110";
+    constant OP_MOVB : ALU_OPCODE := "111";
 
     constant READ  : STD_LOGIC := '1';
     constant WRITE : STD_LOGIC := '0';

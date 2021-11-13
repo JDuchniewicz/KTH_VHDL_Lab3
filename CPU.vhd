@@ -2,6 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.microcode_instructions.all;
+use work.assembly_instructions.all;
 
 entity CPU is
     generic (M : INTEGER;
@@ -19,7 +20,7 @@ architecture structural of CPU is
         port(opcode : IN OPCODE; -- TODO: do the uInstr LUT in the ROM
              flag   : IN STD_LOGIC;
              uPC    : IN STD_LOGIC_VECTOR(1 downto 0);
-             uInstr : OUT uInstruction; -- TODO: tweak size or add more signals?
+             uInstr : OUT uInstruction); -- TODO: tweak size or add more signals?
     end component;
 
     component Datapath is
@@ -50,7 +51,6 @@ architecture structural of CPU is
     signal s_RW      : STD_LOGIC;
 
     -- TODO merging code!!!!
-    signal s_opcode : OPCODE;
     signal s_flag   : STD_LOGIC;
     signal s_uPC    : STD_LOGIC_VECTOR(1 downto 0);
     signal s_IR     : STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -68,12 +68,12 @@ architecture structural of CPU is
     signal s_RB          : STD_LOGIC_VECTOR(M - 1 downto 0);
 
 begin
-    ROM1 : ROM port map(opcode => s_opcode,
+    ROM1 : ROM port map(opcode => s_IR(N - 1 downto N - 5),
                         flag => s_flag,
                         uPC => s_uPC,
                         uInstr => s_uInstr);
 
-    Datapath : Datapath generic map(M => M,
+    Datapath1  : Datapath generic map(M => M,
                                     N => N)
                         port map(Input => Din,
                                  Offset => s_IR(11 downto 0), -- TODO: sign extend
@@ -94,8 +94,7 @@ begin
                                  clk => clk,
                                  rst => rst);
 
-    s_opcode <= s_IR(N - 1 downto N - 5);
-    s_curr_state <= t_fsm_state(s_opcode); -- debug?? TODO: print state name in Modelsim
+    s_curr_state <= s_IR(N - 1 downto N - 5);
 
     s_WA <= s_IR(11 downto 9);
     s_RA <= s_IR(8 downto 6);
