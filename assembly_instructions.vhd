@@ -9,9 +9,13 @@ package assembly_instructions is
     subtype immediate is STD_LOGIC_VECTOR(8 downto 0); -- 9-bit Data
     subtype offset is STD_LOGIC_VECTOR(11 downto 0); -- 12-bit offset
     -- because we have multiple different encodings we will store it as a vector of bits
-    type instruction is STD_LOGIC_VECTOR(15 downto 0);
+    subtype instruction is STD_LOGIC_VECTOR(15 downto 0);
     type program is array(natural range<>) of instruction;
 end assembly_instructions;
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package microcode_instructions is
     -- all Datapath and PC/Address control signals here
@@ -29,7 +33,7 @@ package microcode_instructions is
     --type memory is array(natural range<>) of uInstruction;
 
     -- the instructions are passed immediately to the Datapath
-    type alu_opcode : STD_LOGIC_VECTOR(2 downto 0);
+    subtype alu_opcode is STD_LOGIC_VECTOR(2 downto 0);
     type uInstruction is record
         IE : STD_LOGIC;
         bypass : STD_LOGIC_VECTOR(1 downto 0); -- could be extended?
