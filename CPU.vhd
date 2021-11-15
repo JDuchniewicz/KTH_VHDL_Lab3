@@ -48,15 +48,15 @@ architecture structural of CPU is
 
     -- registers for clocked saving (IR and uPC are clocked in FSM)
     signal s_DatapathOut    : STD_LOGIC_VECTOR(N - 1 downto 0);
-    signal s_RW      : STD_LOGIC;
 
     -- TODO merging code!!!!
     signal s_flag   : STD_LOGIC;
     signal s_uPC    : STD_LOGIC_VECTOR(1 downto 0);
     signal s_IR     : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_IR_op  : STD_LOGIC_VECTOR(3 downto 0);
     signal s_uInstr : uInstruction; -- TODO: tweak if necessary
 
-    type t_fsm_state is (S_ADD, S_SUB, S_AND, S_OR, S_XOR, S_NOT, S_MOV, S_NOP, S_LD, S_ST, S_LDI, S_NA, S_BRZ, S_BRN, S_BRO, S_BRA);
+    type t_fsm_state is (S_ADD, S_SUB, S_AND, S_OR, S_XOR, S_NOT, S_MOV, S_NOP, S_LD, S_ST, S_LDI, S_NA, S_BRZ, S_BRN, S_BRO, S_BRA, S_INVALID);
     signal s_curr_state : t_fsm_state;
 
     -- connect Datapath
@@ -94,49 +94,68 @@ begin
                                  clk => clk,
                                  rst => rst);
 
-    s_curr_state <= s_IR(N - 1 downto N - 5);
-
     s_WA <= s_IR(11 downto 9);
     s_RA <= s_IR(8 downto 6);
     s_RB <= s_IR(5 downto 3);
-
+    s_IR_op <= s_IR(N - 1 downto N - 5);
     -- split Din into components depending on the opcode
+
+    state : process (s_IR)
+    begin
+        case s_IR_op is
+            when "0000" => s_curr_state <= S_ADD;
+            when "0001" => s_curr_state <= S_SUB;
+            when "0010" => s_curr_state <= S_AND;
+            when "0011" => s_curr_state <= S_OR;
+            when "0100" => s_curr_state <= S_XOR;
+            when "0101" => s_curr_state <= S_NOT;
+            when "0110" => s_curr_state <= S_MOV;
+            when "0111" => s_curr_state <= S_NOP;
+            when "1000" => s_curr_state <= S_LD;
+            when "1001" => s_curr_state <= S_ST;
+            when "1010" => s_curr_state <= S_LDI;
+            when "1011" => s_curr_state <= S_NA;
+            when "1100" => s_curr_state <= S_BRZ;
+            when "1101" => s_curr_state <= S_BRN;
+            when "1110" => s_curr_state <= S_BRO;
+            when "1111" => s_curr_state <= S_BRA;
+            when others => s_curr_state <= S_INVALID;
+        end case;
+    end process;
 
     registers : process(clk, rst, s_uInstr)
     begin
         if rst = '1' then
-            s_uInstr <= (others => '0');
+            s_uInstr <= init_instruction;
             s_uPC <= (others => '0');
             s_IR <= (others => '0');
             s_DatapathOut <= (others => '0');
-            s_RW <= '0'; -- TODO: what about outputing RW?
+            RW <= '0';
             address <= (others => '0');
             Dout <= (others => '0');
-        elsif rising_edge(clk)
-
+        elsif rising_edge(clk) then
             -- uPC
             if s_uPC = "11" then
                 s_uPC <= "00";
             else
-                s_uPC <= s_uPC + 1;
+                s_uPC <= std_logic_vector(unsigned(s_uPC) + 1);
             end if;
 
-            s_RW <= s_uInstr.LE;
+            RW <= s_uInstr.RW;
             s_IR <= s_IR; -- retain old IR
             case s_uInstr.LE is
                 when L_IR => s_IR <= Din;
                 when L_FLAG =>
                                 case s_curr_state is
-                                    when S_BRZ => s_flag <= Z_Flag;
-                                    when S_BRN => s_flag <= N_Flag;
-                                    when S_BRO => s_flag <= O_Flag;
+                                    when S_BRZ => s_flag <= s_Z_Flag;
+                                    when S_BRN => s_flag <= s_N_Flag;
+                                    when S_BRO => s_flag <= s_O_Flag;
                                     when others => s_flag <= '0'; -- zero for other instructions?
                                 end case;
                 when L_ADDR => address <= s_DatapathOut;
                 when L_DOUT => Dout <= s_DatapathOut; -- probably need to register them
+                when others => Dout <= (others => 'X'); -- TODO what?
             end case;
-
-            RW <= s_RW; -- wacky tacky tack TODO
         else
             -- retain old values?
         end if;

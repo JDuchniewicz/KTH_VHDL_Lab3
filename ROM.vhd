@@ -33,8 +33,6 @@ architecture structural of ROM is
     -- address is opcode+flag+uPC so they flow easily
     -- function to initialize ROM
     constant ROM_size : NATURAL := 2 ** 7;
-    constant init_instruction : uInstruction := (IE => '0', bypass => (others => '0'), WA_en => '0', RA_en => '0', RB_en => '0',
-                                         ALU => (others => '0'), OE => '0', RW => '0', SEL => (others => '0'), LE => (others => '0'));
     function init_ROM return uMemory is
         variable ROM_content : uMemory (0 to ROM_size);
     begin

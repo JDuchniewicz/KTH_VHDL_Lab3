@@ -75,4 +75,7 @@ package microcode_instructions is
     constant L_FLAG : STD_LOGIC_VECTOR(2 downto 0) := "010";
     constant L_ADDR : STD_LOGIC_VECTOR(2 downto 0) := "011";
     constant L_DOUT : STD_LOGIC_VECTOR(2 downto 0) := "100";
+
+    constant init_instruction : uInstruction := (IE => '0', bypass => (others => '0'), WA_en => '0', RA_en => '0', RB_en => '0',
+                                                 ALU => (others => '0'), OE => '0', RW => '0', SEL => (others => '0'), LE => (others => '0'));
 end microcode_instructions;
