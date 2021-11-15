@@ -11,6 +11,35 @@ package assembly_instructions is
     -- because we have multiple different encodings we will store it as a vector of bits
     subtype instruction is STD_LOGIC_VECTOR(15 downto 0);
     type program is array(natural range<>) of instruction;
+
+    -- constants to code the ops because VHDL is VERY picky for type correctness
+    constant ADD : STD_LOGIC_VECTOR(3 downto 0) := "0000";
+    constant iSUB : STD_LOGIC_VECTOR(3 downto 0) := "0001";
+    constant iAND : STD_LOGIC_VECTOR(3 downto 0) := "0010";
+    constant iOR : STD_LOGIC_VECTOR(3 downto 0) := "0011";
+    constant iXOR : STD_LOGIC_VECTOR(3 downto 0) := "0100";
+    constant iNOT : STD_LOGIC_VECTOR(3 downto 0) := "0101";
+    constant MOV : STD_LOGIC_VECTOR(3 downto 0) := "0110";
+    constant NOP : STD_LOGIC_VECTOR(3 downto 0) := "0111";
+    constant LD : STD_LOGIC_VECTOR(3 downto 0) := "1000";
+    constant ST : STD_LOGIC_VECTOR(3 downto 0) := "1001";
+    constant LDI : STD_LOGIC_VECTOR(3 downto 0) := "1010";
+    constant NA : STD_LOGIC_VECTOR(3 downto 0) := "1011";
+    constant BRZ : STD_LOGIC_VECTOR(3 downto 0) := "1100";
+    constant BRN : STD_LOGIC_VECTOR(3 downto 0) := "1101";
+    constant BRO : STD_LOGIC_VECTOR(3 downto 0) := "1110";
+    constant BRA : STD_LOGIC_VECTOR(3 downto 0) := "1111";
+
+    -- constants for instructions for test to compile
+    constant Tail3 : STD_LOGIC_VECTOR(2 downto 0) := "000";
+    -- register constants (stored in the CPU memory)
+    constant R0 : STD_LOGIC_VECTOR(2 downto 0) := "000";
+    constant R1 : STD_LOGIC_VECTOR(2 downto 0) := "001";
+    constant R2 : STD_LOGIC_VECTOR(2 downto 0) := "010";
+    constant R3 : STD_LOGIC_VECTOR(2 downto 0) := "011";
+    constant R4 : STD_LOGIC_VECTOR(2 downto 0) := "100";
+    constant R5 : STD_LOGIC_VECTOR(2 downto 0) := "101";
+    constant R6 : STD_LOGIC_VECTOR(2 downto 0) := "110";
 end assembly_instructions;
 
 library ieee;
@@ -78,4 +107,5 @@ package microcode_instructions is
 
     constant init_instruction : uInstruction := (IE => '0', bypass => (others => '0'), WA_en => '0', RA_en => '0', RB_en => '0',
                                                  ALU => (others => '0'), OE => '0', RW => '0', SEL => (others => '0'), LE => (others => '0'));
+
 end microcode_instructions;

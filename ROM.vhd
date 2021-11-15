@@ -6,7 +6,7 @@ use work.microcode_instructions.all;
 
 -- this is just the ROM part of microcode which contains all the necessary translations
 entity ROM is
-    port(opcode : IN OPCODE;
+    port(opcode : IN STD_LOGIC_VECTOR(3 downto 0);
          flag   : IN STD_LOGIC;
          uPC    : IN STD_LOGIC_VECTOR(1 downto 0);
          uInstr : OUT uInstruction);
@@ -110,7 +110,7 @@ architecture structural of ROM is
         ROM_content(to_integer(unsigned(to_std_logic_vector("1010010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1010011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- NOP = 1011 Flag = 0 Addr = 1011000
+        -- Not Used = 1011 Flag = 0 Addr = 1011000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1011000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("1011001")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Fetch Ops
         ROM_content(to_integer(unsigned(to_std_logic_vector("1011010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute

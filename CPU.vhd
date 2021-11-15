@@ -17,7 +17,7 @@ end CPU;
 
 architecture structural of CPU is
     component ROM is
-        port(opcode : IN OPCODE; -- TODO: do the uInstr LUT in the ROM
+        port(opcode : IN STD_LOGIC_VECTOR(3 downto 0); -- TODO: do the uInstr LUT in the ROM
              flag   : IN STD_LOGIC;
              uPC    : IN STD_LOGIC_VECTOR(1 downto 0);
              uInstr : OUT uInstruction); -- TODO: tweak size or add more signals?
@@ -56,9 +56,6 @@ architecture structural of CPU is
     signal s_IR_op  : STD_LOGIC_VECTOR(3 downto 0);
     signal s_uInstr : uInstruction; -- TODO: tweak if necessary
 
-    type t_fsm_state is (S_ADD, S_SUB, S_AND, S_OR, S_XOR, S_NOT, S_MOV, S_NOP, S_LD, S_ST, S_LDI, S_NA, S_BRZ, S_BRN, S_BRO, S_BRA, S_INVALID);
-    signal s_curr_state : t_fsm_state;
-
     -- connect Datapath
     signal s_Z_Flag : STD_LOGIC;
     signal s_N_Flag : STD_LOGIC;
@@ -68,7 +65,7 @@ architecture structural of CPU is
     signal s_RB          : STD_LOGIC_VECTOR(M - 1 downto 0);
 
 begin
-    ROM1 : ROM port map(opcode => s_IR(N - 1 downto N - 5),
+    ROM1 : ROM port map(opcode => s_IR_op, -- current state stores the current opcode
                         flag => s_flag,
                         uPC => s_uPC,
                         uInstr => s_uInstr);
@@ -98,30 +95,6 @@ begin
     s_RA <= s_IR(8 downto 6);
     s_RB <= s_IR(5 downto 3);
     s_IR_op <= s_IR(N - 1 downto N - 5);
-    -- split Din into components depending on the opcode
-
-    state : process (s_IR)
-    begin
-        case s_IR_op is
-            when "0000" => s_curr_state <= S_ADD;
-            when "0001" => s_curr_state <= S_SUB;
-            when "0010" => s_curr_state <= S_AND;
-            when "0011" => s_curr_state <= S_OR;
-            when "0100" => s_curr_state <= S_XOR;
-            when "0101" => s_curr_state <= S_NOT;
-            when "0110" => s_curr_state <= S_MOV;
-            when "0111" => s_curr_state <= S_NOP;
-            when "1000" => s_curr_state <= S_LD;
-            when "1001" => s_curr_state <= S_ST;
-            when "1010" => s_curr_state <= S_LDI;
-            when "1011" => s_curr_state <= S_NA;
-            when "1100" => s_curr_state <= S_BRZ;
-            when "1101" => s_curr_state <= S_BRN;
-            when "1110" => s_curr_state <= S_BRO;
-            when "1111" => s_curr_state <= S_BRA;
-            when others => s_curr_state <= S_INVALID;
-        end case;
-    end process;
 
     registers : process(clk, rst, s_uInstr)
     begin
@@ -146,10 +119,10 @@ begin
             case s_uInstr.LE is
                 when L_IR => s_IR <= Din;
                 when L_FLAG =>
-                                case s_curr_state is
-                                    when S_BRZ => s_flag <= s_Z_Flag;
-                                    when S_BRN => s_flag <= s_N_Flag;
-                                    when S_BRO => s_flag <= s_O_Flag;
+                                case s_IR_op is
+                                    when BRZ => s_flag <= s_Z_Flag;
+                                    when BRN => s_flag <= s_N_Flag;
+                                    when BRO => s_flag <= s_O_Flag;
                                     when others => s_flag <= '0'; -- zero for other instructions?
                                 end case;
                 when L_ADDR => address <= s_DatapathOut;
