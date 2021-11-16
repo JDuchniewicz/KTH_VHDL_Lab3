@@ -100,7 +100,7 @@ begin
     s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
     s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
     s_RB <= std_logic_vector(resize(unsigned(s_IR(5 downto 3)), M));
-    s_IR_op <= s_IR(N - 1 downto N - 4);
+    s_IR_op <= Din(N - 1 downto N - 4); -- TODO: chnaged to Din
 
     RW <= s_RW;
     Dout <= s_dout;
@@ -109,7 +109,7 @@ begin
     registers : process(clk, reset, s_uInstr)
     begin
         if reset = '1' then
-            s_uInstr <= init_instruction;
+            --s_uInstr <= init_instruction;
             s_uPC <= (others => '0');
             s_IR <= (others => '0');
             s_DatapathOut <= (others => '0');

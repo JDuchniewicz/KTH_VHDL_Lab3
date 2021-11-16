@@ -17,15 +17,15 @@ architecture structural of ROM is
     function to_std_logic_vector(s : string)
         return std_logic_vector
     is
-        variable ret : std_logic_vector(s'length downto 1); -- strings are indexed from 1 to N inclusive
+        variable ret : std_logic_vector(s'length - 1 downto 0); -- strings are indexed from 1 to N inclusive
     begin
-        for i in 1 to s'high loop
+        for i in 1 to s'length loop
             if s(i) = '0' then
-                ret(i) := '0';
+                ret(s'length  - i) := '0';
             elsif s(i) = '1' then
-                ret(i) := '1';
+                ret(s'length - i) := '1';
             else
-                ret(i) := 'X';
+                ret(s'length - i) := 'X';
             end if;
         end loop;
         return ret;
@@ -171,8 +171,12 @@ begin
 
     decode : process(opcode, flag, uPC)
         variable address : STD_LOGIC_VECTOR(6 downto 0);
+        variable dummy : INTEGER;
+        variable vec : STD_LOGIC_VECTOR(6 downto 0);
     begin
         address := opcode & flag & uPC;
+        vec := to_std_logic_vector("1010000");
+        dummy := to_integer(unsigned(to_std_logic_vector("1010000")));
         uInstr <= memory(to_integer(unsigned(address)));
     end process;
 end structural;
