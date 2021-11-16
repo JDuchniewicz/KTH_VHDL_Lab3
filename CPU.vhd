@@ -49,6 +49,9 @@ architecture structural of CPU is
     -- registers for clocked saving (IR and uPC are clocked in FSM)
     signal s_DatapathOut    : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_signExtendedOffset : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_RW : STD_LOGIC;
+    signal s_dout : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_address : STD_LOGIC_VECTOR(N - 1 downto 0);
 
     -- TODO merging code!!!!
     signal s_flag   : STD_LOGIC;
@@ -99,6 +102,10 @@ begin
     s_RB <= std_logic_vector(resize(unsigned(s_IR(5 downto 3)), M));
     s_IR_op <= s_IR(N - 1 downto N - 4);
 
+    RW <= s_RW;
+    Dout <= s_dout;
+    address <= s_address;
+
     registers : process(clk, reset, s_uInstr)
     begin
         if reset = '1' then
@@ -106,9 +113,9 @@ begin
             s_uPC <= (others => '0');
             s_IR <= (others => '0');
             s_DatapathOut <= (others => '0');
-            RW <= '0';
-            address <= (others => '0');
-            Dout <= (others => '0');
+            s_RW <= '0';
+            s_address <= (others => '0');
+            s_dout <= (others => '0');
         elsif rising_edge(clk) then
             -- uPC
             if s_uPC = "11" then
@@ -117,8 +124,7 @@ begin
                 s_uPC <= std_logic_vector(unsigned(s_uPC) + 1);
             end if;
 
-            RW <= s_uInstr.RW;
-            s_IR <= s_IR; -- retain old IR
+            s_RW <= s_uInstr.RW;
             case s_uInstr.LE is
                 when L_IR => s_IR <= Din;
                 when L_FLAG =>
@@ -128,12 +134,16 @@ begin
                                     when BRO => s_flag <= s_O_Flag;
                                     when others => s_flag <= '0'; -- zero for other instructions?
                                 end case;
-                when L_ADDR => address <= s_DatapathOut;
-                when L_DOUT => Dout <= s_DatapathOut; -- probably need to register them
-                when others => Dout <= (others => 'X'); -- TODO what?
+                when L_ADDR => s_address <= s_DatapathOut;
+                when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
+                when others => s_dout <= s_dout; -- TODO what?
             end case;
         else
-            -- retain old values?
+            -- retain old values (registers)
+            s_uPC <= s_uPC;
+            s_IR <= s_IR;
+            s_address <= s_address;
+            s_dout <= s_dout;
         end if;
     end process;
 

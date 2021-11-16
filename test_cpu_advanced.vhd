@@ -67,14 +67,14 @@ begin
 spy_process: -- Spy process connects signals inside the hierarchy to signals in the test_bench (simulator dependent - only works in Modelsim)
    process
    begin
-       init_signal_spy("/test/dut/upc","/t_upc",1);
-       init_signal_spy("/test/dut/dp/rf_mem","/t_rf_mem",1);
+       init_signal_spy("/test/dut/s_uPC","/t_upc",1);
+       init_signal_spy("/test/dut/Datapath1/RF_1","/t_rf_mem",1);
        --init_signal_spy("/test/dut/z_flag","/t_z",1);
        --init_signal_spy("/test/dut/n_flag","/t_n",1);
        --init_signal_spy("/test/dut/o_flag","/t_o",1);
-	   init_signal_spy("/test/dut/L_z","/t_z",1);
-	   init_signal_spy("/test/dut/L_n","/t_n",1);
-	   init_signal_spy("/test/dut/L_o","/t_o",1);
+	   init_signal_spy("/test/dut/s_Z_Flag","/t_z",1);
+	   init_signal_spy("/test/dut/s_N_Flag","/t_n",1);
+	   init_signal_spy("/test/dut/s_O_Flag","/t_o",1);
        wait;
    end process spy_process;
 
