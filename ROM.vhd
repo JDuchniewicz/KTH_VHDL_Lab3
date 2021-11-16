@@ -17,7 +17,7 @@ architecture structural of ROM is
     function to_std_logic_vector(s : string)
         return std_logic_vector
     is
-        variable ret : std_logic_vector(s'length downto 0); -- strings are indexed from 1 to N inclusive
+        variable ret : std_logic_vector(s'length downto 1); -- strings are indexed from 1 to N inclusive
     begin
         for i in 1 to s'high loop
             if s(i) = '0' then
@@ -34,7 +34,7 @@ architecture structural of ROM is
     -- function to initialize ROM
     constant ROM_size : NATURAL := 2 ** 7;
     function init_ROM return uMemory is
-        variable ROM_content : uMemory (0 to ROM_size);
+        variable ROM_content : uMemory (0 to ROM_size - 1);
     begin
         -- zero out the ROM
         for i in 0 to ROM_size - 1 loop
@@ -159,6 +159,9 @@ architecture structural of ROM is
         ROM_content(to_integer(unsigned(to_std_logic_vector("1110011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
         -- TODO: add control words signals for initialization of the memory
+        -- CONTROL Addr = 1111111
+        --ROM_content(to_integer(unsigned(to_std_logic_vector("1111111")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
+
         return ROM_content;
     end function;
 

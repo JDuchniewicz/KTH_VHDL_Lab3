@@ -114,6 +114,7 @@ begin
             s_IR <= (others => '0');
             s_DatapathOut <= (others => '0');
             s_RW <= '0';
+            s_flag <= '0';
             s_address <= (others => '0');
             s_dout <= (others => '0');
         elsif rising_edge(clk) then
@@ -142,6 +143,8 @@ begin
             -- retain old values (registers)
             s_uPC <= s_uPC;
             s_IR <= s_IR;
+            s_RW <= s_RW;
+            s_flag <= s_flag;
             s_address <= s_address;
             s_dout <= s_dout;
         end if;
