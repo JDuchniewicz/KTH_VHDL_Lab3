@@ -60,7 +60,7 @@ architecture structural of Datapath is
     signal s_QB : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_Sum : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_A_input_f : STD_LOGIC_VECTOR(N - 1 downto 0);
-    signal s_RB_input_f: STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_RB_input_f: STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_ReadB_input_f : STD_LOGIC;
 
 begin

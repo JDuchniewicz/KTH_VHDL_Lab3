@@ -17,9 +17,9 @@ architecture structural of ROM is
     function to_std_logic_vector(s : string)
         return std_logic_vector
     is
-        variable ret : std_logic_vector(s'length - 1 downto 0);
+        variable ret : std_logic_vector(s'length downto 0); -- strings are indexed from 1 to N inclusive
     begin
-        for i in 0 to s'high loop
+        for i in 1 to s'high loop
             if s(i) = '0' then
                 ret(i) := '0';
             elsif s(i) = '1' then

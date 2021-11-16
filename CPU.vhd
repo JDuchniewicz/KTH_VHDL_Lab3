@@ -8,7 +8,7 @@ entity CPU is
     generic (M : INTEGER;
              N : INTEGER);
     port (clk     : IN STD_LOGIC;
-          rst     : IN STD_LOGIC;
+          reset   : IN STD_LOGIC;
           Din     : IN STD_LOGIC_VECTOR(N - 1 downto 0);
           address : OUT STD_LOGIC_VECTOR(N - 1 downto 0);
           Dout    : OUT STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -48,6 +48,7 @@ architecture structural of CPU is
 
     -- registers for clocked saving (IR and uPC are clocked in FSM)
     signal s_DatapathOut    : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_signExtendedOffset : STD_LOGIC_VECTOR(N - 1 downto 0);
 
     -- TODO merging code!!!!
     signal s_flag   : STD_LOGIC;
@@ -60,7 +61,7 @@ architecture structural of CPU is
     signal s_Z_Flag : STD_LOGIC;
     signal s_N_Flag : STD_LOGIC;
     signal s_O_Flag : STD_LOGIC;
-    signal s_WA          : STD_LOGIC_VECTOR(M - 1 downto 0);
+    signal s_WA          : STD_LOGIC_VECTOR(M - 1 downto 0); -- TODO: do not understand how to map 3 bit inputs to the M - 1 (8 bits)
     signal s_RA          : STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_RB          : STD_LOGIC_VECTOR(M - 1 downto 0);
 
@@ -73,7 +74,7 @@ begin
     Datapath1  : Datapath generic map(M => M,
                                     N => N)
                         port map(Input => Din,
-                                 Offset => s_IR(11 downto 0), -- TODO: sign extend
+                                 Offset => s_signExtendedOffset, -- TODO: sign extend
                                  Bypass => s_uInstr.bypass, -- TODO should I access it via record fields or bits of vector?
                                  IE => s_uInstr.IE,
                                  WAddr => s_WA,
@@ -89,16 +90,18 @@ begin
                                  N_Flag => s_N_Flag,
                                  O_Flag => s_O_Flag,
                                  clk => clk,
-                                 rst => rst);
+                                 rst => reset);
 
-    s_WA <= s_IR(11 downto 9);
-    s_RA <= s_IR(8 downto 6);
-    s_RB <= s_IR(5 downto 3);
-    s_IR_op <= s_IR(N - 1 downto N - 5);
+    s_signExtendedOffset <= std_logic_vector(resize(unsigned(s_IR(11 downto 0)), N)); -- TODO: sign extend
 
-    registers : process(clk, rst, s_uInstr)
+    s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
+    s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
+    s_RB <= std_logic_vector(resize(unsigned(s_IR(5 downto 3)), M));
+    s_IR_op <= s_IR(N - 1 downto N - 4);
+
+    registers : process(clk, reset, s_uInstr)
     begin
-        if rst = '1' then
+        if reset = '1' then
             s_uInstr <= init_instruction;
             s_uPC <= (others => '0');
             s_IR <= (others => '0');
