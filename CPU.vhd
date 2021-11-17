@@ -49,6 +49,8 @@ architecture structural of CPU is
     -- registers for clocked saving (IR and uPC are clocked in FSM)
     signal s_DatapathOut    : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_signExtendedOffset : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_signExtendedData : STD_LOGIC_VECTOR(N - 1 downto 0);
+    signal s_OffsetData : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_RW : STD_LOGIC;
     signal s_dout : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_address : STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -77,7 +79,7 @@ begin
     Datapath1  : Datapath generic map(M => M,
                                     N => N)
                         port map(Input => Din,
-                                 Offset => s_signExtendedOffset, -- TODO: sign extend
+                                 Offset => s_OffsetData, -- TODO: fix this
                                  Bypass => s_uInstr.bypass, -- TODO should I access it via record fields or bits of vector?
                                  IE => s_uInstr.IE,
                                  WAddr => s_WA,
@@ -95,7 +97,8 @@ begin
                                  clk => clk,
                                  rst => reset);
 
-    s_signExtendedOffset <= std_logic_vector(resize(unsigned(s_IR(11 downto 0)), N)); -- TODO: sign extend
+    s_signExtendedOffset <= std_logic_vector(resize(unsigned(s_IR(11 downto 0)), N)); -- TODO: sign extended not worign because dAta is shorter than offset
+    s_signExtendedData <= std_logic_vector(resize(unsigned(s_IR(8 downto 0)), N));
 
     s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
     s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
@@ -138,6 +141,11 @@ begin
                 when L_ADDR => s_address <= s_DatapathOut;
                 when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
                 when others => s_dout <= s_dout; -- TODO what?
+            end case;
+            -- data extension
+            case s_IR_op is
+                when LDI => s_OffsetData <= s_signExtendedData;
+                when others => s_OffsetData <= s_signExtendedOffset;
             end case;
         else
             -- retain old values (registers)

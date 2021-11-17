@@ -43,8 +43,8 @@ architecture structural of ROM is
 
     -- add functions
         -- ADD = 0000 Flag = 0 Addr = 0000000
-                                                    -- IE, bypass, WA_en, RA_en, RB_en, ALU, OE, RW, Flag, LE (TODO: maybe move the latching of registers to outer MCU instead of the FSM)
-        ROM_content(to_integer(unsigned(to_std_logic_vector("0000000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction TODO: fix ALU to have good ops at least in this Lab
+                                                    -- IE, bypass, WA_en, RA_en, RB_en, ALU, OE, RW, Flag, LE
+        ROM_content(to_integer(unsigned(to_std_logic_vector("0000000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("0000001")))) := ('0', NOBR, '1', '1', '1', OP_ADD, '0', READ, ZERO, L_FLAG); -- Fetch Ops (TODO: I do not understand how to use L_Flag?) (latch flag, but should I also store the value in output?
         ROM_content(to_integer(unsigned(to_std_logic_vector("0000010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("0000011")))) := ('0', NOBR, '0', '0', '0',  OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads

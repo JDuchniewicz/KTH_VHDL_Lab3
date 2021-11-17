@@ -3,7 +3,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity ALU is
-	generic (N : INTEGER := 4); -- default value??
+	generic (N : INTEGER);
 	port (OP		: in STD_LOGIC_VECTOR(2 downto 0);
 			A		: in STD_LOGIC_VECTOR(N - 1 downto 0);
 			B		: in STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -15,7 +15,7 @@ entity ALU is
 end ALU;
 
 architecture data_flow of ALU is -- should it be called behavioral?
-	type t_operation is (OP_ADD, OP_SUB, OP_AND, OP_OR, OP_XOR, OP_NOT, OP_MOV, OP_Zero);
+	type t_operation is (OP_ADD, OP_SUB, OP_AND, OP_OR, OP_XOR, OP_INCR, OP_MOVA, OP_MOVB);
 
     constant c_all_zeros : STD_LOGIC_VECTOR(A'range) := (others => '0');
 begin
@@ -38,9 +38,9 @@ begin
 			when OP_AND => v_Sum := A and B;
 			when OP_OR 	=> v_Sum := A or B;
 			when OP_XOR => v_Sum := A xor B;
-			when OP_NOT => v_Sum := not A;
-			when OP_MOV => v_Sum := A;
-			when OP_Zero=> v_Sum := (others => '0');
+			when OP_INCR => v_Sum := std_logic_vector(signed(A) + 1);
+			when OP_MOVA => v_Sum := A;
+			when OP_MOVB => v_Sum := B;
 		end case;
         -- flags
         if v_Sum = c_all_zeros then
@@ -65,7 +65,7 @@ begin
         else
             v_O_Flag := '0';
         end if;
-        Sum <= v_Sum; -- TODO: check if behaves properly - combi
+        Sum <= v_Sum;
         Z_Flag <= v_Z_Flag;
         N_Flag <= v_N_Flag;
         O_Flag <= v_O_Flag;

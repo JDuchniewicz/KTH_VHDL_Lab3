@@ -56,7 +56,7 @@ architecture test_cpu_advanced of test is
 
     -- test_signals in Modelsim (i.e., spy_signals)
   signal t_upc:std_logic_vector(1 downto 0);
-  type rf_type is array(0 to 7) of std_logic_vector(N-1 downto 0);
+  type rf_type is array(0 to 2**8 - 1) of std_logic_vector(N-1 downto 0);
   signal t_rf_mem:rf_type;
   signal t_z,t_n,t_o:std_logic;
 begin
@@ -68,7 +68,7 @@ spy_process: -- Spy process connects signals inside the hierarchy to signals in 
    process
    begin
        init_signal_spy("/test/dut/s_uPC","/t_upc",1);
-       init_signal_spy("/test/dut/Datapath1/RF_1","/t_rf_mem",1);
+       init_signal_spy("/test/dut/Datapath1/RF_1/mem","/t_rf_mem",1);
        --init_signal_spy("/test/dut/z_flag","/t_z",1);
        --init_signal_spy("/test/dut/n_flag","/t_n",1);
        --init_signal_spy("/test/dut/o_flag","/t_o",1);
