@@ -100,7 +100,7 @@ architecture structural of ROM is
 
         -- ST = 1001 Flag = 0 Addr =  1001000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1001000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1001001")))) := ('0', BP_A, '0', '0', '1', OP_MOVA, '1', READ, ZERO, L_DOUT); -- Fetch Ops (load content at  TODO: Force 0 on A??
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1001001")))) := ('0', BP_A, '0', '0', '1', OP_MOVB, '1', READ, ZERO, L_DOUT); -- Fetch Ops (MOVB R2 and output it to Dout
         ROM_content(to_integer(unsigned(to_std_logic_vector("1001010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1001011")))) := ('0', NOBR, '0', '1', '0', OP_MOVA, '1', WRITE, ZERO, L_ADDR); -- Latch Reads
 

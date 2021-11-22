@@ -138,10 +138,6 @@ begin
                                     when others => s_flag <= '0'; -- zero for other instructions?
                                 end case;
                 when L_ADDR => s_address <= s_DatapathOut;
-                             case s_IR_op is -- need the proper upc --TODO
-                                 when ST => s_dout <= std_logic_vector(resize(signed(s_RB), N));
-                                 when others => s_dout <= s_dout;
-                             end case;
                 when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
                 when others => s_dout <= s_dout; -- TODO what?
             end case;
@@ -165,13 +161,5 @@ begin
             when others => s_OffsetData <= s_signExtendedOffset;
         end case;
     end process;
-
-    --dout_st : process (s_IR_op, s_RB) TODO: how to fix the ST special weird requirement
-    --begin
-    --    case s_IR_op is
-    --        when ST => s_dout <= std_logic_vector(resize(signed(s_RB), N));
-    --        when others => s_dout <= s_dout;
-    --     end case;
-    --end process;
 
 end structural;
