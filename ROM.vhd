@@ -94,9 +94,9 @@ architecture structural of ROM is
 
         -- LD = 1000 Flag = 0 Addr =  1000000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1000000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1000001")))) := ('0', NOBR, '0', '0', '1', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Fetch Ops (load Data from Address and latch it) -- do the microop translation to ALU instr in the MCU
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1000001")))) := ('0', NOBR, '0', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Fetch Ops (load Data from Address and latch it)
         ROM_content(to_integer(unsigned(to_std_logic_vector("1000010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1000011")))) := ('0', BP_A, '1', '1', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads (load Data to R1 via bypass A)
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1000011")))) := ('1', NOBR, '1', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads (load Data to R1 via bypass A)
 
         -- ST = 1001 Flag = 0 Addr =  1001000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1001000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction

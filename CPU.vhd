@@ -102,7 +102,7 @@ begin
     s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
     s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
     s_RB <= std_logic_vector(resize(unsigned(s_IR(5 downto 3)), M));
-    s_IR_op <= Din(N - 1 downto N - 4); -- TODO: chnaged to Din
+    s_IR_op <= Din(N - 1 downto N - 4) when s_uPC /= "11" else s_IR_op; -- NASTY HACK for LD requiring a change in Din during 11 uPC cycle
 
     RW <= s_RW;
     Dout <= s_dout;

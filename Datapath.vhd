@@ -153,6 +153,8 @@ begin
             s_WAddr_f <= WAddr;
 
             s_QB_ALU_input_f <= (others => '1');
+--        elsif Bypass = "101" then -- LD special case
+
         else -- normal case
             s_A_input_f <= s_QA;
             s_RB_input_f <= RB;
