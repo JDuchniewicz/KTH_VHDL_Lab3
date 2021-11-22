@@ -7,7 +7,7 @@ entity Datapath is
              N : INTEGER);
     port (Input     : in STD_LOGIC_VECTOR(N - 1 downto 0);
           Offset    : in STD_LOGIC_VECTOR(N - 1 downto 0);
-          Bypass    : in STD_LOGIC_VECTOR(1 downto 0); -- bypass A and B
+          Bypass    : in STD_LOGIC_VECTOR(2 downto 0); -- bypass A and B
           IE        : in STD_LOGIC;
           WAddr     : in STD_LOGIC_VECTOR(M - 1 downto 0);
           Write     : in STD_LOGIC;
@@ -63,6 +63,7 @@ architecture structural of Datapath is
     signal s_RB_input_f: STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_ReadB_input_f : STD_LOGIC;
     signal s_WAddr_f : STD_LOGIC_VECTOR(M - 1 downto 0);
+    signal s_QB_ALU_input_f : STD_LOGIC_VECTOR(N - 1 downto 0);
 
 begin
     RF_1 : RF generic map(M => M,
@@ -82,7 +83,7 @@ begin
     ALU_1 : ALU generic map(N => N)
                 port map(OP => OP,
                          A => s_A_input_f,
-                         B => s_QB,
+                         B => s_QB_ALU_input_f,
                          Sum => s_Sum,
                          Z_Flag => Z_Flag,
                          N_Flag => N_Flag,
@@ -109,10 +110,10 @@ begin
         end if;
     end process;
 
-    bypass_proc : process(Bypass, Offset, s_QA, RB, ReadB, ReadA, WAddr)
+    bypass_proc : process(Bypass, Offset, s_QA, s_QB, RB, ReadB, ReadA, WAddr)
     begin
         -- Bypass
-        if Bypass = "11" then -- branch instruction
+        if Bypass = "011" then -- branch instruction
             -- A
             s_A_input_f <= Offset;
 
@@ -120,7 +121,9 @@ begin
             s_RB_input_f <= (others => '1');
             s_ReadB_input_f <= '1';
             s_WAddr_f <= (others => '1');
-        elsif Bypass = "10" then
+
+            s_QB_ALU_input_f <= s_QB;
+        elsif Bypass = "010" then
             -- A
             s_A_input_f <= Offset;
 
@@ -128,7 +131,9 @@ begin
             s_RB_input_f <= RB;
             s_ReadB_input_f <= ReadB;
             s_WAddr_f <= WAddr;
-        elsif Bypass = "01" then
+
+            s_QB_ALU_input_f <= s_QB;
+        elsif Bypass = "001" then
             -- A
             s_A_input_f <= s_QA;
 
@@ -136,11 +141,24 @@ begin
             s_RB_input_f <= (others => '1'); -- it is not saved back (waddr needs to be modified for bypassB) add a signal
             s_ReadB_input_f <= '1';
             s_WAddr_f <= (others => '1');
+
+            s_QB_ALU_input_f <= s_QB;
+        elsif Bypass = "100" then -- NOT special case
+            -- A
+            s_A_input_f <= s_QA;
+
+            -- B (totally miss out the RF in this case)
+            s_RB_input_f <= RB;
+            s_ReadB_input_f <= ReadB;
+            s_WAddr_f <= WAddr;
+
+            s_QB_ALU_input_f <= (others => '1');
         else -- normal case
             s_A_input_f <= s_QA;
             s_RB_input_f <= RB;
             s_ReadB_input_f <= ReadB;
             s_WAddr_f <= WAddr;
+            s_QB_ALU_input_f <= s_QB;
         end if;
     end process;
 

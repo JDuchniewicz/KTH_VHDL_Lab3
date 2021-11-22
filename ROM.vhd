@@ -74,9 +74,9 @@ architecture structural of ROM is
         ROM_content(to_integer(unsigned(to_std_logic_vector("0100010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("0100011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- NOT = 0101 Flag = 0 Addr = 0101000 (TODO: is this present after we fix the ALU?) TODO: fix it it works differently R1 = NOT R2
+        -- NOT = 0101 Flag = 0 Addr = 0101000
         ROM_content(to_integer(unsigned(to_std_logic_vector("0101000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("0101001")))) := ('0', NOBR, '1', '1', '0', OP_MOVA, '0', READ, ZERO, L_FLAG); -- Fetch Ops
+        ROM_content(to_integer(unsigned(to_std_logic_vector("0101001")))) := ('0', BP_NOT, '1', '1', '1', OP_XOR, '0', READ, ZERO, L_FLAG); -- Fetch Ops (R2 xor 1's)
         ROM_content(to_integer(unsigned(to_std_logic_vector("0101010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("0101011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
@@ -171,12 +171,8 @@ begin
 
     decode : process(opcode, flag, uPC)
         variable address : STD_LOGIC_VECTOR(6 downto 0);
-        variable dummy : INTEGER;
-        variable vec : STD_LOGIC_VECTOR(6 downto 0);
     begin
         address := opcode & flag & uPC;
-        vec := to_std_logic_vector("1010000");
-        dummy := to_integer(unsigned(to_std_logic_vector("1010000")));
         uInstr <= memory(to_integer(unsigned(address)));
     end process;
 end structural;

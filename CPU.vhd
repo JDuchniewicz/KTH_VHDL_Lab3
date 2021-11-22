@@ -28,7 +28,7 @@ architecture structural of CPU is
                  N : INTEGER);
         port (Input     : in STD_LOGIC_VECTOR(N - 1 downto 0);
               Offset    : in STD_LOGIC_VECTOR(N - 1 downto 0);
-              Bypass    : in STD_LOGIC_VECTOR(1 downto 0); -- bypass A and B
+              Bypass    : in STD_LOGIC_VECTOR(2 downto 0); -- bypass A and B
               IE        : in STD_LOGIC;
               WAddr     : in STD_LOGIC_VECTOR(M - 1 downto 0);
               Write     : in STD_LOGIC;

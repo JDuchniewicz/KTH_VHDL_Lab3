@@ -65,7 +65,7 @@ package microcode_instructions is
     subtype alu_opcode is STD_LOGIC_VECTOR(2 downto 0);
     type uInstruction is record
         IE : STD_LOGIC;
-        bypass : STD_LOGIC_VECTOR(1 downto 0); -- could be extended?
+        bypass : STD_LOGIC_VECTOR(2 downto 0); -- could be extended?
         WA_en : STD_LOGIC;
         RA_en : STD_LOGIC;
         RB_en : STD_LOGIC;
@@ -78,10 +78,11 @@ package microcode_instructions is
     type uMemory is array (natural range<>) of uInstruction;
 
     -- constants for easier code understanding
-    constant NOBR  : STD_LOGIC_VECTOR(1 downto 0) := "00";
-    constant BP_A  : STD_LOGIC_VECTOR(1 downto 0) := "10";
-    constant BP_B  : STD_LOGIC_VECTOR(1 downto 0) := "01";
-    constant BP_AB : STD_LOGIC_VECTOR(1 downto 0) := "11";
+    constant NOBR  : STD_LOGIC_VECTOR(2 downto 0) := "000";
+    constant BP_A  : STD_LOGIC_VECTOR(2 downto 0) := "010";
+    constant BP_B  : STD_LOGIC_VECTOR(2 downto 0) := "001";
+    constant BP_AB : STD_LOGIC_VECTOR(2 downto 0) := "011";
+    constant BP_NOT : STD_LOGIC_VECTOR(2 downto 0) := "100";
 
     constant OP_ADD : ALU_OPCODE := "000";
     constant OP_SUB : ALU_OPCODE := "001";
