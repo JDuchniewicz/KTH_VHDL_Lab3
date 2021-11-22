@@ -88,7 +88,7 @@ begin
                          O_Flag => O_Flag,
                          rst => rst);
 
-    proc : process (IE, OE, clk)
+    proc : process (IE, OE, clk, Bypass, s_Sum, Offset, s_QA, RB, ReadB, ReadA, Input)
     begin
     -- IE
     if IE = '1' then

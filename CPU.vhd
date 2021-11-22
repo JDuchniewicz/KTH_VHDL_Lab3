@@ -97,8 +97,8 @@ begin
                                  clk => clk,
                                  rst => reset);
 
-    s_signExtendedOffset <= std_logic_vector(resize(unsigned(s_IR(11 downto 0)), N)); -- TODO: sign extended not worign because dAta is shorter than offset
-    s_signExtendedData <= std_logic_vector(resize(unsigned(s_IR(8 downto 0)), N));
+    s_signExtendedOffset <= std_logic_vector(resize(signed(s_IR(11 downto 0)), N));
+    s_signExtendedData <= std_logic_vector(resize(signed(s_IR(8 downto 0)), N));
 
     s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
     s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
@@ -142,11 +142,6 @@ begin
                 when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
                 when others => s_dout <= s_dout; -- TODO what?
             end case;
-            -- data extension
-            case s_IR_op is
-                when LDI => s_OffsetData <= s_signExtendedData;
-                when others => s_OffsetData <= s_signExtendedOffset;
-            end case;
         else
             -- retain old values (registers)
             s_uPC <= s_uPC;
@@ -156,6 +151,16 @@ begin
             s_address <= s_address;
             s_dout <= s_dout;
         end if;
+    end process;
+
+    -- data extension (combi)
+    combi : process(s_IR_op, s_signExtendedData, s_signExtendedOffset)
+    begin
+        -- data extension
+        case s_IR_op is
+            when LDI => s_OffsetData <= s_signExtendedData;
+            when others => s_OffsetData <= s_signExtendedOffset;
+        end case;
     end process;
 
 end structural;
