@@ -38,7 +38,7 @@ begin
 			when OP_AND => v_Sum := A and B;
 			when OP_OR 	=> v_Sum := A or B;
 			when OP_XOR => v_Sum := A xor B;
-			when OP_INCR => v_Sum := std_logic_vector(signed(A) + 1);
+			when OP_INCR => v_Sum := std_logic_vector(signed(B) + 1); -- TODO: bypassB reads from B?
 			when OP_MOVA => v_Sum := A;
 			when OP_MOVB => v_Sum := B;
 		end case;

@@ -55,7 +55,6 @@ architecture structural of CPU is
     signal s_dout : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_address : STD_LOGIC_VECTOR(N - 1 downto 0);
 
-    -- TODO merging code!!!!
     signal s_flag   : STD_LOGIC;
     signal s_uPC    : STD_LOGIC_VECTOR(1 downto 0);
     signal s_IR     : STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -79,8 +78,8 @@ begin
     Datapath1  : Datapath generic map(M => M,
                                     N => N)
                         port map(Input => Din,
-                                 Offset => s_OffsetData, -- TODO: fix this
-                                 Bypass => s_uInstr.bypass, -- TODO should I access it via record fields or bits of vector?
+                                 Offset => s_OffsetData,
+                                 Bypass => s_uInstr.bypass,
                                  IE => s_uInstr.IE,
                                  WAddr => s_WA,
                                  Write => s_uInstr.WA_en,

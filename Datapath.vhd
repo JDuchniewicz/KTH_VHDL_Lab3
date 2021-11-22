@@ -62,12 +62,13 @@ architecture structural of Datapath is
     signal s_A_input_f : STD_LOGIC_VECTOR(N - 1 downto 0);
     signal s_RB_input_f: STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_ReadB_input_f : STD_LOGIC;
+    signal s_WAddr_f : STD_LOGIC_VECTOR(M - 1 downto 0);
 
 begin
     RF_1 : RF generic map(M => M,
                           N => N)
                 port map(WD => s_WD,
-                         WAddr => WAddr,
+                         WAddr => s_WAddr_f,
                          Write => Write,
                          RA => RA,
                          ReadA => ReadA,
@@ -104,7 +105,7 @@ begin
         Output <= (others => 'Z');
     end if;
 
-    -- Bypass -- TODO: what about sign extensions? to data and offset
+    -- Bypass
     if Bypass = "11" then -- branch instruction
         -- A
         s_A_input_f <= Offset;
@@ -112,6 +113,7 @@ begin
         -- B
         s_RB_input_f <= (others => '1');
         s_ReadB_input_f <= '1';
+        s_WAddr_f <= (others => '1');
     elsif Bypass = "10" then
         -- A
         s_A_input_f <= Offset;
@@ -119,17 +121,20 @@ begin
         -- B
         s_RB_input_f <= RB;
         s_ReadB_input_f <= ReadB;
+        s_WAddr_f <= WAddr;
     elsif Bypass = "01" then
         -- A
         s_A_input_f <= s_QA;
 
         -- B
-        s_RB_input_f <= (others => '1');
+        s_RB_input_f <= (others => '1'); -- it is not saved back (waddr needs to be modified for bypassB) add a signal
         s_ReadB_input_f <= '1';
+        s_WAddr_f <= (others => '1');
     else -- normal case
         s_A_input_f <= s_QA;
         s_RB_input_f <= RB;
         s_ReadB_input_f <= ReadB;
+        s_WAddr_f <= WAddr;
     end if;
     end process;
 end structural;
