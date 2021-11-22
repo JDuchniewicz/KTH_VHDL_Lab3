@@ -89,52 +89,59 @@ begin
                          O_Flag => O_Flag,
                          rst => rst);
 
-    proc : process (IE, OE, clk, Bypass, s_Sum, Offset, s_QA, RB, ReadB, ReadA, Input)
+    ie_proc : process(IE, Input, s_Sum)
     begin
-    -- IE
-    if IE = '1' then
-        s_WD <= Input;
-    else
-        s_WD <= s_Sum;
-    end if;
-
-    -- OE
-    if OE = '1' then
-        Output <= s_Sum;
-    else
-        Output <= (others => 'Z');
-    end if;
-
-    -- Bypass
-    if Bypass = "11" then -- branch instruction
-        -- A
-        s_A_input_f <= Offset;
-
-        -- B
-        s_RB_input_f <= (others => '1');
-        s_ReadB_input_f <= '1';
-        s_WAddr_f <= (others => '1');
-    elsif Bypass = "10" then
-        -- A
-        s_A_input_f <= Offset;
-
-        -- B
-        s_RB_input_f <= RB;
-        s_ReadB_input_f <= ReadB;
-        s_WAddr_f <= WAddr;
-    elsif Bypass = "01" then
-        -- A
-        s_A_input_f <= s_QA;
-
-        -- B
-        s_RB_input_f <= (others => '1'); -- it is not saved back (waddr needs to be modified for bypassB) add a signal
-        s_ReadB_input_f <= '1';
-        s_WAddr_f <= (others => '1');
-    else -- normal case
-        s_A_input_f <= s_QA;
-        s_RB_input_f <= RB;
-        s_ReadB_input_f <= ReadB;
-        s_WAddr_f <= WAddr;
-    end if;
+        -- IE
+        if IE = '1' then
+            s_WD <= Input;
+        else
+            s_WD <= s_Sum;
+        end if;
     end process;
+
+    oe_proc : process(OE, s_Sum)
+    begin
+        -- OE
+        if OE = '1' then
+            Output <= s_Sum;
+        else
+            Output <= (others => 'Z');
+        end if;
+    end process;
+
+    bypass_proc : process(Bypass, Offset, s_QA, RB, ReadB, ReadA, WAddr)
+    begin
+        -- Bypass
+        if Bypass = "11" then -- branch instruction
+            -- A
+            s_A_input_f <= Offset;
+
+            -- B
+            s_RB_input_f <= (others => '1');
+            s_ReadB_input_f <= '1';
+            s_WAddr_f <= (others => '1');
+        elsif Bypass = "10" then
+            -- A
+            s_A_input_f <= Offset;
+
+            -- B
+            s_RB_input_f <= RB;
+            s_ReadB_input_f <= ReadB;
+            s_WAddr_f <= WAddr;
+        elsif Bypass = "01" then
+            -- A
+            s_A_input_f <= s_QA;
+
+            -- B
+            s_RB_input_f <= (others => '1'); -- it is not saved back (waddr needs to be modified for bypassB) add a signal
+            s_ReadB_input_f <= '1';
+            s_WAddr_f <= (others => '1');
+        else -- normal case
+            s_A_input_f <= s_QA;
+            s_RB_input_f <= RB;
+            s_ReadB_input_f <= ReadB;
+            s_WAddr_f <= WAddr;
+        end if;
+    end process;
+
 end structural;
