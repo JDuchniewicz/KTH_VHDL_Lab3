@@ -65,9 +65,14 @@ architecture structural of CPU is
     signal s_Z_Flag : STD_LOGIC;
     signal s_N_Flag : STD_LOGIC;
     signal s_O_Flag : STD_LOGIC;
-    signal s_WA          : STD_LOGIC_VECTOR(M - 1 downto 0); -- TODO: do not understand how to map 3 bit inputs to the M - 1 (8 bits)
+    signal s_WA          : STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_RA          : STD_LOGIC_VECTOR(M - 1 downto 0);
     signal s_RB          : STD_LOGIC_VECTOR(M - 1 downto 0);
+
+    -- registers to hold flag from previous op
+    signal r_Z_Flag : STD_LOGIC;
+    signal r_N_Flag : STD_LOGIC;
+    signal r_O_Flag : STD_LOGIC;
 
 begin
     ROM1 : ROM port map(opcode => s_IR_op, -- current state stores the current opcode
@@ -117,6 +122,9 @@ begin
             --s_DatapathOut <= (others => '0'); -- this causes latches
             s_RW <= '0';
             s_flag <= '0';
+            r_Z_Flag <= '0';
+            r_N_Flag <= '0';
+            r_O_Flag <= '0';
             s_address <= (others => '0');
             s_dout <= (others => '0');
         elsif rising_edge(clk) then
@@ -130,23 +138,31 @@ begin
             s_RW <= s_uInstr.RW;
             case s_uInstr.LE is
                 when L_IR => s_IR <= Din;
-                --when L_FLAG =>
+                                -- set flags for branch ops
+                                case s_IR_op is
+                                    when BRZ => s_flag <= r_Z_Flag;
+                                    when BRN => s_flag <= r_N_Flag;
+                                    when BRO => s_flag <= r_O_Flag;
+                                    when others => s_flag <= '0'; -- zero for other instructions?
+                                end case;
+                when L_FLAG =>
+                                -- preserve flags
+                                r_Z_Flag <= s_Z_Flag;
+                                r_N_Flag <= s_N_Flag;
+                                r_O_Flag <= s_O_Flag;
                 when L_ADDR => s_address <= s_DatapathOut;
                 when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
                 when others => s_dout <= s_dout; -- TODO what?
             end case;
-            --case s_IR_op is
-            --    when BRZ => s_flag <= s_Z_Flag;
-            --    when BRN => s_flag <= s_N_Flag;
-            --    when BRO => s_flag <= s_O_Flag;
-            --    when others => s_flag <= '0'; -- zero for other instructions?
-            --end case;
         else
             -- retain old values (registers)
             s_uPC <= s_uPC;
             s_IR <= s_IR;
             s_RW <= s_RW;
             s_flag <= s_flag;
+            r_Z_Flag <= r_Z_Flag;
+            r_N_Flag <= r_N_Flag;
+            r_O_Flag <= r_O_Flag;
             s_address <= s_address;
             s_dout <= s_dout;
         end if;

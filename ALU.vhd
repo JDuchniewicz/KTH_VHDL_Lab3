@@ -50,20 +50,17 @@ begin
         end if;
         v_N_Flag := v_Sum(N - 1) and '1';
         -- this could be implemented easier if we know the carry value but it is implemented by the compiler
-        if (A(N - 1) = '1' and B(N - 1) = '1') then -- if bits before are the same but the result is different we have overflow
-            if v_Sum(N - 1) = '0' then
-                v_O_Flag := '1';
-            else
-                v_O_Flag := '0';
+        v_O_Flag := '0';
+        if (t_operation'val(to_integer(unsigned(OP)))) = OP_ADD or (t_operation'val(to_integer(unsigned(OP)))) = OP_SUB then
+            if (A(N - 1) = '1' and B(N - 1) = '1') then -- if bits before are the same but the result is different we have overflow
+                if v_Sum(N - 1) = '0' then
+                    v_O_Flag := '1';
+                end if;
+            elsif (A(N - 1) = '0' and B(N - 1) = '0') then
+                if v_Sum(N - 1) = '1' then
+                    v_O_Flag := '1';
+                end if;
             end if;
-        elsif (A(N - 1) = '0' and B(N - 1) = '0') then
-            if v_Sum(N - 1) = '1' then
-                v_O_Flag := '1';
-            else
-                v_O_Flag := '0';
-            end if;
-        else
-            v_O_Flag := '0';
         end if;
         Sum <= v_Sum;
         Z_Flag <= v_Z_Flag;

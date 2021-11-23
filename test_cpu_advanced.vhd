@@ -69,9 +69,9 @@ spy_process: -- Spy process connects signals inside the hierarchy to signals in 
    begin
        init_signal_spy("/test/dut/s_uPC","/t_upc",1);
        init_signal_spy("/test/dut/Datapath1/RF_1/mem","/t_rf_mem",1);
-	   init_signal_spy("/test/dut/s_Z_Flag","/t_z",1);
-	   init_signal_spy("/test/dut/s_N_Flag","/t_n",1);
-	   init_signal_spy("/test/dut/s_O_Flag","/t_o",1);
+	   init_signal_spy("/test/dut/r_Z_Flag","/t_z",1);
+	   init_signal_spy("/test/dut/r_N_Flag","/t_n",1);
+	   init_signal_spy("/test/dut/r_O_Flag","/t_o",1);
        wait;
    end process spy_process;
 
