@@ -116,47 +116,47 @@ architecture structural of ROM is
         ROM_content(to_integer(unsigned(to_std_logic_vector("1011010")))) := ('0', BP_B, '1', '1', '0', OP_INCR, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1011011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- BRZ = 1011 Flag = 0 Addr = 1011000
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011001")))) := ('0', BP_B, '1', '0', '0', OP_INCR, '0', READ, ZERO, NONE); -- Fetch Ops -- PC is stored at last RF address (use Bypass B to access it)
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011010")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
-
-        -- BRZ = 1011 Flag = 1 Addr = 1011100
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011100")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011101")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011110")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1011111")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
-
-        -- BRN = 1100 Flag = 0 Addr = 1100000
+        -- BRZ = 1100 Flag = 0 Addr = 1100000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100001")))) := ('0', BP_B, '1', '0', '0', OP_INCR, '0', READ, ZERO, NONE); -- Fetch Ops -- PC is stored at last RF address (use Bypass B to access it)
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1100010")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1100010")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- BRN = 1100 Flag = 1 Addr = 1100100
+        -- BRZ = 1100 Flag = 1 Addr = 1100100
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100100")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100101")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1100110")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1100110")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1100111")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- BRO = 1101 Flag = 0 Addr = 1101000
+        -- BRN = 1101 Flag = 0 Addr = 1101000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101001")))) := ('0', BP_B, '1', '0', '0', OP_INCR, '0', READ, ZERO, NONE); -- Fetch Ops -- PC is stored at last RF address (use Bypass B to access it)
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1101010")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1101010")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- BRO = 1101 Flag = 1 Addr = 1101100
+        -- BRN = 1101 Flag = 1 Addr = 1101100
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101100")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101101")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1101110")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1101110")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1101111")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
-        -- BRA = 1110 Flag = 0 Addr = 1110000
+        -- BRO = 1110 Flag = 0 Addr = 1110000
         ROM_content(to_integer(unsigned(to_std_logic_vector("1110000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1110001")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
-        ROM_content(to_integer(unsigned(to_std_logic_vector("1110010")))) := ('0', BP_B, '1', '1', '0', OP_MOVA, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110001")))) := ('0', BP_B, '1', '0', '0', OP_INCR, '0', READ, ZERO, NONE); -- Fetch Ops -- PC is stored at last RF address (use Bypass B to access it)
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110010")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
         ROM_content(to_integer(unsigned(to_std_logic_vector("1110011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
+
+        -- BRO = 1110 Flag = 1 Addr = 1110100
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110100")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110101")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110110")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1110111")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
+
+        -- BRA = 1111 Flag = 0 Addr = 1111000
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1111000")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, L_IR); -- Load Instruction
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1111001")))) := ('0', BP_AB, '1', '0', '0', OP_ADD, '0', READ, ZERO, NONE); -- Fetch Ops
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1111010")))) := ('0', BP_B, '0', '0', '0', OP_MOVB, '1', READ, ZERO, L_ADDR); -- Execute
+        ROM_content(to_integer(unsigned(to_std_logic_vector("1111011")))) := ('0', NOBR, '0', '0', '0', OP_MOVA, '0', READ, ZERO, NONE); -- Latch Reads
 
         -- TODO: add control words signals for initialization of the memory
         -- CONTROL Addr = 1111111

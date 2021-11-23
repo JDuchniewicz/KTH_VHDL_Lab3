@@ -130,17 +130,17 @@ begin
             s_RW <= s_uInstr.RW;
             case s_uInstr.LE is
                 when L_IR => s_IR <= Din;
-                when L_FLAG =>
-                                case s_IR_op is
-                                    when BRZ => s_flag <= s_Z_Flag;
-                                    when BRN => s_flag <= s_N_Flag;
-                                    when BRO => s_flag <= s_O_Flag;
-                                    when others => s_flag <= '0'; -- zero for other instructions?
-                                end case;
+                --when L_FLAG =>
                 when L_ADDR => s_address <= s_DatapathOut;
                 when L_DOUT => s_dout <= s_DatapathOut; -- probably need to register them
                 when others => s_dout <= s_dout; -- TODO what?
             end case;
+            --case s_IR_op is
+            --    when BRZ => s_flag <= s_Z_Flag;
+            --    when BRN => s_flag <= s_N_Flag;
+            --    when BRO => s_flag <= s_O_Flag;
+            --    when others => s_flag <= '0'; -- zero for other instructions?
+            --end case;
         else
             -- retain old values (registers)
             s_uPC <= s_uPC;

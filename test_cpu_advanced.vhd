@@ -155,13 +155,13 @@ test_all_instructions:
 
 	   -- At this point, Z=0, N=0, O=0
 	   i(Din,BRZ,-15);
-	       assert(t_rf_mem(7)="0000000000001011") report "Z=0:BRZ does not work" severity failure;
+           assert(t_rf_mem(255)="0000000000001011") report "Z=0:BRZ does not work" severity failure; -- last register (111111 is our PC register)
 		   report "BRZ with Z=0 works OK";
 	   i(Din,BRN,15);
-	       assert(t_rf_mem(7)="0000000000001100") report "N=0:BRN does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000001100") report "N=0:BRN does not work" severity failure;
 		   report "BRN with N=0 works OK";
 	   i(Din,BRO,-15);
-	       assert(t_rf_mem(7)="0000000000001101") report "O=0:BRO does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000001101") report "O=0:BRO does not work" severity failure;
 		   report "BRO with O=0 works OK";
 
 	   -- Create Z=1
@@ -169,10 +169,10 @@ test_all_instructions:
 	       assert(t_z='1') report "XOR Setting Z=1 does not work" severity failure;
 		   report "XOR Setting Z=1 works";
 	   i(Din,BRZ,-15);
-	       assert(t_rf_mem(7)="1111111111111111") report "Z=1:BRZ does not work" severity failure;
+	       assert(t_rf_mem(255)="1111111111111111") report "Z=1:BRZ does not work" severity failure;
 		   report "BRZ with negative offset works OK";
 	   i(Din,BRZ,+15);
-	       assert(t_rf_mem(7)="0000000000001110") report "Z=1:BRZ does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000001110") report "Z=1:BRZ does not work" severity failure;
 		   report "BRZ with posititve offset works OK";
 
 	   -- Create Z=0, N=1
@@ -180,10 +180,10 @@ test_all_instructions:
 	       assert(t_n='1') report "Setting N=1 does not work" severity failure;
 		   report "XOR Setting N=1 works";
 	   i(Din,BRN,-15);
-	       assert(t_rf_mem(7)="0000000000000000") report "N=1:BRN does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000000000") report "N=1:BRN does not work" severity failure;
 		   report "BRN with negative address works OK";
 	   i(Din,BRN,+15);
-	       assert(t_rf_mem(7)="000000000001111") report "N=1:BRN does not work" severity failure;
+	       assert(t_rf_mem(255)="000000000001111") report "N=1:BRN does not work" severity failure;
 		   report "BRN with positive address works OK";
 
        -- Create O=1
@@ -199,17 +199,17 @@ test_all_instructions:
 	      assert(t_o='1') report "ADD setting O=1 does not work";
 		  report "ADD setting O=1 works OK";
 	   i(Din,BRO,-15);
-	       assert(t_rf_mem(7)="0000000000001001") report "O=1:BRO does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000001001") report "O=1:BRO does not work" severity failure;
 		   report "BRO with negative address works OK";
 	   i(Din,BRO,15);
-	       assert(t_rf_mem(7)="0000000000011000") report "O=1:BRO does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000011000") report "O=1:BRO does not work" severity failure;
 		   report "BRO with positive address works OK";
 
 	   i(Din,BRA,-15);
-	       assert(t_rf_mem(7)="0000000000001001") report "BRA does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000000001001") report "BRA does not work" severity failure;
 		   report "BRA with negative address works OK";
 	   i(Din,BRA,57);
-	       assert(t_rf_mem(7)="0000000001000010") report "BRA does not work" severity failure;
+	       assert(t_rf_mem(255)="0000000001000010") report "BRA does not work" severity failure;
 		   report "BRA with positive address works OK";
 	   wait on clk until clk='1';
 	   report "CPU passes all tests.";
