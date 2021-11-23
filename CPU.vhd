@@ -5,8 +5,8 @@ use work.microcode_instructions.all;
 use work.assembly_instructions.all;
 
 entity CPU is
-    generic (M : INTEGER;
-             N : INTEGER);
+    generic (M : INTEGER := 8;
+             N : INTEGER := 16);
     port (clk     : IN STD_LOGIC;
           reset   : IN STD_LOGIC;
           Din     : IN STD_LOGIC_VECTOR(N - 1 downto 0);
@@ -107,7 +107,6 @@ begin
     s_WA <= std_logic_vector(resize(unsigned(s_IR(11 downto 9)), M));
     s_RA <= std_logic_vector(resize(unsigned(s_IR(8 downto 6)), M));
     s_RB <= std_logic_vector(resize(unsigned(s_IR(5 downto 3)), M));
-    s_IR_op <= Din(N - 1 downto N - 4) when s_uPC /= "11" else s_IR_op; -- NASTY HACK for LD requiring a change in Din during 11 uPC cycle
 
     RW <= s_RW;
     Dout <= s_dout;
@@ -178,4 +177,11 @@ begin
         end case;
     end process;
 
+    ir_op : process(Din, s_uPC, s_IR_op)
+    begin
+        s_IR_op <= s_IR(N - 1 downto N - 4);
+        if s_uPC /= "11" then
+            s_IR_op <= Din(N - 1 downto N - 4); -- NASTY HACK for LD requiring a change in Din during 11 uPC cycle
+        end if;
+    end process;
 end structural;
